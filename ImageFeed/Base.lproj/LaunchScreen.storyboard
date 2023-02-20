@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,7 +27,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="backgroundColor"/>
                         <constraints>
                             <constraint firstItem="24y-HN-SHQ" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Uoh-Mm-O8O"/>
                             <constraint firstItem="24y-HN-SHQ" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="phF-O6-5gm"/>
@@ -40,5 +41,8 @@
     </scenes>
     <resources>
         <image name="splash_screen_logo" width="72.666664123535156" height="75.333335876464844"/>
+        <namedColor name="backgroundColor">
+            <color red="0.10199999999999999" green="0.106" blue="0.13300000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
