@@ -17,7 +17,6 @@ class ImagesListViewController: UIViewController {
             return
         }
 
-        cell.setupGradient()
         cell.setupContent(image: image, date: Date(), isLiked: indexPath.row % 2 == 0)
     }
     
