@@ -21,8 +21,10 @@ final class ImagesListCell: UITableViewCell {
         formatter.timeStyle = .none
         return formatter
     }()
+    
+    private var gradientLayer: CAGradientLayer?
 
-    func setupGradient() {
+    private func setupGradient() {
         let layer0 = CAGradientLayer()
         layer0.colors = [
           UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 0).cgColor,
@@ -35,6 +37,8 @@ final class ImagesListCell: UITableViewCell {
         layer0.bounds = gradientView.bounds.insetBy(dx: -0.5*gradientView.bounds.size.width, dy: -0.5*gradientView.bounds.size.height)
         layer0.position = gradientView.center
         gradientView.layer.addSublayer(layer0)
+        
+        gradientLayer = layer0
     }
     
     func setupContent(image: UIImage, date: Date, isLiked: Bool) {
@@ -43,5 +47,15 @@ final class ImagesListCell: UITableViewCell {
 
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         likeButton.setImage(likeImage, for: .normal)
+    }
+    
+    override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: self.layer)
+        setupGradient()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        gradientLayer?.removeFromSuperlayer()
     }
 }
