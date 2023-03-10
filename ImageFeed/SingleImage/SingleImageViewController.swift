@@ -15,10 +15,12 @@ final class SingleImageViewController: UIViewController {
         }
     }
 
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var scrollView: UIScrollView!
-
+    @IBOutlet
+    private weak var imageView: UIImageView!
     
+    @IBOutlet
+    private weak var scrollView: UIScrollView!
+
     @IBAction func didTapShareButton() {
         let share = UIActivityViewController(
             activityItems: [image],
@@ -27,7 +29,8 @@ final class SingleImageViewController: UIViewController {
         present(share, animated: true, completion: nil)
     }
     
-    @IBAction func didTapBackButton() {
+    @IBAction
+    private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }
 

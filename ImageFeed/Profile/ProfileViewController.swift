@@ -9,7 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
 
-    private let avatarImageView: UIImageView = {
+    private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFill
@@ -19,7 +19,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
 
-    private let nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let view = UILabel()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
 
-    private let loginLabel: UILabel = {
+    private lazy var loginLabel: UILabel = {
         let view = UILabel()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.textColor = UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1)
@@ -37,7 +37,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
 
-    private let descriptionLabel: UILabel = {
+    private lazy var descriptionLabel: UILabel = {
         let view = UILabel()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
@@ -46,7 +46,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    private let logoutButton: UIButton = {
+    private lazy var logoutButton: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.setBackgroundImage(UIImage(named: "logout_button"), for: .normal)
@@ -61,7 +61,7 @@ final class ProfileViewController: UIViewController {
         view.addSubview(descriptionLabel)
         view.addSubview(logoutButton)
         
-        let safeArea = view.layoutMarginsGuide
+        let safeArea = view.safeAreaLayoutGuide
 
         let constraints = [
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
