@@ -198,7 +198,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="selectedImageTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <tabBarAppearance key="standardAppearance">
-                            <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="0.0" colorSpace="custom" customColorSpace="displayP3"/>
+                            <color key="backgroundColor" name="backgroundColor"/>
                         </tabBarAppearance>
                     </tabBar>
                     <connections>
@@ -242,8 +242,11 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CAq-Qc-DuM">
-                                <rect key="frame" x="16" y="693" width="361" height="35"/>
+                                <rect key="frame" x="16" y="680" width="361" height="48"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="FuR-7k-AOM"/>
+                                </constraints>
                                 <color key="tintColor" name="backgroundColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Войти"/>
@@ -264,7 +267,6 @@
                             <constraint firstItem="iig-V0-jfB" firstAttribute="centerY" secondItem="HKX-al-7UY" secondAttribute="centerY" id="8v6-tH-y8F"/>
                             <constraint firstItem="iig-V0-jfB" firstAttribute="centerX" secondItem="HKX-al-7UY" secondAttribute="centerX" id="Blv-M1-a3Q"/>
                             <constraint firstItem="ENr-sD-JN7" firstAttribute="trailing" secondItem="CAq-Qc-DuM" secondAttribute="trailing" constant="16" id="QiZ-Ho-qG2"/>
-                            <constraint firstItem="CAq-Qc-DuM" firstAttribute="centerX" secondItem="HKX-al-7UY" secondAttribute="centerX" id="WjP-AV-sXh"/>
                             <constraint firstItem="ENr-sD-JN7" firstAttribute="bottom" secondItem="CAq-Qc-DuM" secondAttribute="bottom" constant="90" id="ve6-Xa-gPA"/>
                             <constraint firstItem="CAq-Qc-DuM" firstAttribute="leading" secondItem="ENr-sD-JN7" secondAttribute="leading" constant="16" id="wmV-mo-x39"/>
                         </constraints>
@@ -284,7 +286,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H9m-VH-wBV">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="96" width="393" height="756"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <wkWebViewConfiguration key="configuration">
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
@@ -292,10 +294,10 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mw3-eg-vf6">
-                                <rect key="frame" x="0.0" y="59" width="64" height="44"/>
+                                <rect key="frame" x="9" y="68" width="24" height="24"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="64" id="Yrl-27-TXT"/>
-                                    <constraint firstAttribute="height" constant="44" id="zno-q7-hFG"/>
+                                    <constraint firstAttribute="width" constant="24" id="Yrl-27-TXT"/>
+                                    <constraint firstAttribute="height" constant="24" id="zno-q7-hFG"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="nav_back_button"/>
@@ -304,21 +306,21 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ymx-GR-ASn">
-                                <rect key="frame" x="0.0" y="99" width="393" height="4"/>
+                                <rect key="frame" x="0.0" y="92" width="393" height="4"/>
                                 <color key="tintColor" name="backgroundColor"/>
                             </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="9yK-TR-Eic"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="mw3-eg-vf6" firstAttribute="leading" secondItem="9yK-TR-Eic" secondAttribute="leading" id="BWh-ob-Mrd"/>
+                            <constraint firstItem="mw3-eg-vf6" firstAttribute="leading" secondItem="9yK-TR-Eic" secondAttribute="leading" constant="9" id="BWh-ob-Mrd"/>
                             <constraint firstItem="H9m-VH-wBV" firstAttribute="leading" secondItem="jD6-Ee-uhV" secondAttribute="leading" id="HaF-dJ-UaA"/>
-                            <constraint firstItem="mw3-eg-vf6" firstAttribute="top" secondItem="9yK-TR-Eic" secondAttribute="top" id="IBk-5d-20h"/>
+                            <constraint firstItem="mw3-eg-vf6" firstAttribute="top" secondItem="9yK-TR-Eic" secondAttribute="top" constant="9" id="IBk-5d-20h"/>
                             <constraint firstItem="ymx-GR-ASn" firstAttribute="leading" secondItem="9yK-TR-Eic" secondAttribute="leading" id="Ndj-Kf-1mG"/>
                             <constraint firstItem="9yK-TR-Eic" firstAttribute="trailing" secondItem="ymx-GR-ASn" secondAttribute="trailing" id="aOt-Hl-3Cg"/>
                             <constraint firstAttribute="bottom" secondItem="H9m-VH-wBV" secondAttribute="bottom" id="cQ1-r9-N2I"/>
-                            <constraint firstItem="ymx-GR-ASn" firstAttribute="top" secondItem="9yK-TR-Eic" secondAttribute="top" constant="40" id="uwE-xp-Ycy"/>
-                            <constraint firstItem="H9m-VH-wBV" firstAttribute="top" secondItem="jD6-Ee-uhV" secondAttribute="top" id="z0x-I3-RIZ"/>
+                            <constraint firstItem="ymx-GR-ASn" firstAttribute="top" secondItem="mw3-eg-vf6" secondAttribute="bottom" id="uwE-xp-Ycy"/>
+                            <constraint firstItem="H9m-VH-wBV" firstAttribute="top" secondItem="ymx-GR-ASn" secondAttribute="bottom" id="z0x-I3-RIZ"/>
                             <constraint firstAttribute="trailing" secondItem="H9m-VH-wBV" secondAttribute="trailing" id="zxe-CM-qbR"/>
                         </constraints>
                     </view>

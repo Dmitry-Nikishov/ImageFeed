@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum App {
+enum AppConstants {
     enum UnsplashApi {
         static let accessKey = "YCx4-W7k2UhrDesFH23pElxqIP0qe1NiU4hW1NSjGtU"
         static let secretKey = "M75wixC1xEphJbRvyqFLjRdp8JjujkB5kX30hfa-yAs"

@@ -29,12 +29,12 @@ final class WebViewController: UIViewController {
     }
     
     private func downloadWebViewContent() {
-        var urlComponents = URLComponents(string: App.UnsplashApi.unsplashAuthorizeURLString)!
+        var urlComponents = URLComponents(string: AppConstants.UnsplashApi.unsplashAuthorizeURLString)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: App.UnsplashApi.accessKey),
-            URLQueryItem(name: "redirect_uri", value: App.UnsplashApi.redirectURI),
+            URLQueryItem(name: "client_id", value: AppConstants.UnsplashApi.accessKey),
+            URLQueryItem(name: "redirect_uri", value: AppConstants.UnsplashApi.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: App.UnsplashApi.accessScope)
+            URLQueryItem(name: "scope", value: AppConstants.UnsplashApi.accessScope)
         ]
         let url = urlComponents.url!
 

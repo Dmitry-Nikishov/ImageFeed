@@ -19,9 +19,9 @@ final class OAuth2Service {
         urlComponents.host = "unsplash.com"
         urlComponents.path = "/oauth/token"
         urlComponents.queryItems = [
-            .init(name: "client_id", value: App.UnsplashApi.accessKey),
-            .init(name: "client_secret", value: App.UnsplashApi.secretKey),
-            .init(name: "redirect_uri", value: App.UnsplashApi.redirectURI),
+            .init(name: "client_id", value: AppConstants.UnsplashApi.accessKey),
+            .init(name: "client_secret", value: AppConstants.UnsplashApi.secretKey),
+            .init(name: "redirect_uri", value: AppConstants.UnsplashApi.redirectURI),
             .init(name: "code", value: code),
             .init(name: "grant_type", value: "authorization_code")
         ]
@@ -40,16 +40,7 @@ final class OAuth2Service {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }
-    
-    private func completeOnMainThread(
-        handler: @escaping OAuthTokenResponseHandler,
-        with arg: OAuthTokenResponseResult
-    ) {
-        DispatchQueue.main.async {
-            handler(arg)
-        }
-    }
-    
+        
     func fetchAuthToken(
         code: String,
         completion: @escaping OAuthTokenResponseHandler
@@ -59,12 +50,18 @@ final class OAuth2Service {
             return
         }
         
+        let handleInMainThread: OAuthTokenResponseHandler = { result in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+
         let request = buildUrlRequest(for: url)
         let decoder = buildJsonDecoder()
         
         urlSession.dataTask(
             with: request,
-            completionHandler: { [weak self] data, response, error in
+            completionHandler: { data, response, error in
             guard
                 let data = data,
                 let response = response as? HTTPURLResponse,
@@ -78,16 +75,9 @@ final class OAuth2Service {
                     OAuthTokenResponseBody.self,
                     from: data
                 )
-                
-                self?.completeOnMainThread(
-                    handler: completion,
-                    with: .success(responseBody)
-                )
+                handleInMainThread(.success(responseBody))
             } catch {
-                self?.completeOnMainThread(
-                    handler: completion,
-                    with: .failure(error)
-                )
+                handleInMainThread(.failure(error))
             }
         }).resume()
     }
