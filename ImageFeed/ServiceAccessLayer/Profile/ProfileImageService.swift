@@ -28,15 +28,15 @@ final class ProfileImageServices {
         return urlComponents
     }
     
-    private func createRequest(_ username: String) -> URLRequest {
+    private func createRequest(_ username: String) throws -> URLRequest {
         let urlComponents = createUrlComponents(for: username)
         guard let url = urlComponents?.url else {
-            fatalError("URL creation failure")
+            throw AppErrors.urlCreationFailure
         }
         
         var request = URLRequest(url: url)
         guard let token = OAuth2TokenStorage().token else {
-            fatalError("Token creation failure")
+            throw AppErrors.tokenCreationFailure
         }
         
         request.setValue(
@@ -68,25 +68,32 @@ final class ProfileImageServices {
         task?.cancel()
         lastUsername = username
         
-        let request = createRequest(username)
-        let decoder = createDecoder()
-        
-        let session: URLSession = URLSession.shared
-        let task = session.objectTask(for: request) { (result: ProfileUserResult) in
-            switch result {
-            case .success(let responseBody):
-                let profileImageURL = responseBody.profileImage.small
-                self.avatarURL = profileImageURL
-                completion(.success(profileImageURL))
-                self.notifyChange(profileImageURL)
-                self.task = nil
-            case .failure(let error):
-                completion(.failure(error))
-                self.lastUsername = nil
+        do {
+            let request = try createRequest(username)
+            
+            let session: URLSession = URLSession.shared
+            let task = session.objectTask(for: request) { [weak self] (result: ProfileUserResult) in
+                switch result {
+                case .success(let responseBody):
+                    let profileImageURL = responseBody.profileImage.small
+                    self?.avatarURL = profileImageURL
+                    completion(.success(profileImageURL))
+                    self?.notifyChange(profileImageURL)
+                    self?.task = nil
+                case .failure(let error):
+                    completion(.failure(error))
+                    self?.lastUsername = nil
+                }
             }
+            self.task = task
+            task.resume()
+        } catch AppErrors.tokenCreationFailure {
+            assertionFailure("Token creation failure")
+        } catch AppErrors.urlCreationFailure {
+            assertionFailure("Url creation failure")
+        } catch {
+            assertionFailure("Unexpected failure")
         }
-        self.task = task
-        task.resume()
     }
     
 }

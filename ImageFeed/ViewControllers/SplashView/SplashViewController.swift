@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SplashViewController: UIViewController {
+final class SplashViewController: AppStyledViewController {
     private let oauth2Service = OAuth2Service()
     private let oauth2TokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
@@ -19,6 +19,21 @@ final class SplashViewController: UIViewController {
         imageView.image = UIImage(named: "splash_screen_logo")
         return imageView
     }()
+
+    override func viewDidLoad() {
+        view.backgroundColor = .appBackground
+        setupView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if let token = OAuth2TokenStorage().token {
+            fetchProfile(token)
+        } else {
+            showAuthViewController()
+        }
+    }
     
     private func showAlert(with error: Error) {
         let alert = UIAlertController(
@@ -46,11 +61,6 @@ final class SplashViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    override func viewDidLoad() {
-        view.backgroundColor = .black
-        setupView()
-    }
-    
     private func showAuthViewController() {
         let authViewController = AuthViewController()
         authViewController.delegate = self
@@ -58,16 +68,6 @@ final class SplashViewController: UIViewController {
         let navigationAuthViewController = UINavigationController(rootViewController: authViewController)
         navigationAuthViewController.modalPresentationStyle = .fullScreen
         present(navigationAuthViewController, animated: true)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if let token = OAuth2TokenStorage().token {
-            fetchProfile(token)
-        } else {
-            showAuthViewController()
-        }
     }
 }
 

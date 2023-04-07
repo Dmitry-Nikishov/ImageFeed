@@ -7,14 +7,14 @@
 
 import UIKit
 
-final class ImagesListViewController: UIViewController {
+final class ImagesListViewController: AppStyledViewController {
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     
     private lazy var tableView: UITableView = {
         let view = UITableView()
         
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
+        view.backgroundColor = .appBackground
         view.separatorStyle = .none
         view.contentInset = UIEdgeInsets(
             top: 12,
@@ -36,6 +36,11 @@ final class ImagesListViewController: UIViewController {
         formatter.dateStyle = .long
         return formatter
     }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupViews()
+    }
 
     private func configCell(
         for cell: ImagesListCell,
@@ -45,7 +50,7 @@ final class ImagesListViewController: UIViewController {
         }
     
         cell.selectionStyle = .none
-        cell.backgroundColor = .black
+        cell.backgroundColor = .appBackground
         cell.configure(
             image: image,
             date: dateFormatter.string(from: Date()),
@@ -56,7 +61,7 @@ final class ImagesListViewController: UIViewController {
     private func setupViews() {
         tableView.dataSource = self
         tableView.delegate = self
-        view.backgroundColor = .black
+        view.backgroundColor = .appBackground
         
         view.addSubview(tableView)
 
@@ -68,11 +73,6 @@ final class ImagesListViewController: UIViewController {
         ]
         
         NSLayoutConstraint.activate(constraints)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
     }
 }
 

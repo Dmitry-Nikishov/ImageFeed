@@ -27,10 +27,10 @@ final class ProfileService {
         return urlComponents
     }
     
-    private func createRequest(_ token: String) -> URLRequest {
-        var urlComponents = createUrlComponents()
+    private func createRequest(_ token: String) throws -> URLRequest {
+        let urlComponents = createUrlComponents()
         guard let url = urlComponents?.url else {
-            fatalError("Create URL failure")
+            throw AppErrors.urlCreationFailure
         }
         
         var request = URLRequest(url: url)
@@ -48,23 +48,29 @@ final class ProfileService {
         task?.cancel()
         lastToken = token
         
-        let request = createRequest(token)
-        let session = URLSession.shared
-        
-        let task = session.objectTask(for: request) { (result: ProfileResultErrorResult) in
-            switch result {
-            case .success(let response):
-                self.profile = Profile(from: response)
-                guard let profile = self.profile else {return}
-                completion(.success(profile))
-                self.profile = profile
-                self.task = nil
-            case .failure(let error):
-                completion(.failure(error))
-                self.lastToken = nil
+        do {
+            let request = try createRequest(token)
+            let session = URLSession.shared
+            
+            let task = session.objectTask(for: request) { [weak self] (result: ProfileResultErrorResult) in
+                switch result {
+                case .success(let response):
+                    self?.profile = Profile(from: response)
+                    guard let profile = self?.profile else {return}
+                    completion(.success(profile))
+                    self?.profile = profile
+                    self?.task = nil
+                case .failure(let error):
+                    completion(.failure(error))
+                    self?.lastToken = nil
+                }
             }
+            self.task = task
+            task.resume()
+        } catch AppErrors.urlCreationFailure {
+            assertionFailure("Url creation failure")
+        } catch {
+            assertionFailure("Unexpected failure")
         }
-        self.task = task
-        task.resume()
     }
 }

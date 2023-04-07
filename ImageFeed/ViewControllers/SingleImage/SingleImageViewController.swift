@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SingleImageViewController: UIViewController {
+final class SingleImageViewController: AppStyledViewController {
     private lazy var scrollView: UIScrollView = {
         let view = UIScrollView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -22,10 +22,6 @@ final class SingleImageViewController: UIViewController {
         return view
     }()
     
-    @objc private func didTapBackButton() {
-        dismiss(animated: true)
-    }
-
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -39,14 +35,6 @@ final class SingleImageViewController: UIViewController {
         return button
     }()
     
-    @objc private func didTapShareButton() {
-        let share = UIActivityViewController(
-            activityItems: [image],
-            applicationActivities: nil
-        )
-        present(share, animated: true)
-    }
-
     private lazy var shareButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -56,10 +44,27 @@ final class SingleImageViewController: UIViewController {
         return button
     }()
     
+    private let image: UIImage
+    
+    init(image: UIImage) {
+        self.image = image
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented for SingleImageViewController")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setupViews()
+        rescaleAndCenterImageInScrollView(image: self.image)
+    }
 
     private func setupViews() {
         scrollView.delegate = self
-        view.backgroundColor = .black
+        view.backgroundColor = .appBackground
         imageView.image = image
         
         view.addSubview(scrollView)
@@ -93,13 +98,6 @@ final class SingleImageViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        setupViews()
-        rescaleAndCenterImageInScrollView(image: self.image)
-    }
-    
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
@@ -117,15 +115,16 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
-    private let image: UIImage
-    
-    init(image: UIImage) {
-        self.image = image
-        super.init(nibName: nil, bundle: nil)
+    @objc private func didTapShareButton() {
+        let share = UIActivityViewController(
+            activityItems: [image],
+            applicationActivities: nil
+        )
+        present(share, animated: true)
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented for SingleImageViewController")
+
+    @objc private func didTapBackButton() {
+        dismiss(animated: true)
     }
 }
 

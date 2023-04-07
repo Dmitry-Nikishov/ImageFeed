@@ -36,6 +36,10 @@
 		F6E797A129DD8C7D00B5F2C9 /* AuthViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797A029DD8C7D00B5F2C9 /* AuthViewControllerDelegate.swift */; };
 		F6E797A429DD8E5100B5F2C9 /* WebViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797A329DD8E5100B5F2C9 /* WebViewControllerDelegate.swift */; };
 		F6E797AA29DDAE5200B5F2C9 /* AppTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797A929DDAE5200B5F2C9 /* AppTypes.swift */; };
+		F6E797AE29DED64000B5F2C9 /* AppErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797AD29DED64000B5F2C9 /* AppErrors.swift */; };
+		F6E797B029E023B300B5F2C9 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797AF29E023B300B5F2C9 /* UIColor+Extension.swift */; };
+		F6E797B329E0265E00B5F2C9 /* AppStyledViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797B229E0265E00B5F2C9 /* AppStyledViewController.swift */; };
+		F6E797B529E026A900B5F2C9 /* AppStyledTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E797B429E026A900B5F2C9 /* AppStyledTabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +71,10 @@
 		F6E797A029DD8C7D00B5F2C9 /* AuthViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewControllerDelegate.swift; sourceTree = "<group>"; };
 		F6E797A329DD8E5100B5F2C9 /* WebViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerDelegate.swift; sourceTree = "<group>"; };
 		F6E797A929DDAE5200B5F2C9 /* AppTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTypes.swift; sourceTree = "<group>"; };
+		F6E797AD29DED64000B5F2C9 /* AppErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppErrors.swift; sourceTree = "<group>"; };
+		F6E797AF29E023B300B5F2C9 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		F6E797B229E0265E00B5F2C9 /* AppStyledViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStyledViewController.swift; sourceTree = "<group>"; };
+		F6E797B429E026A900B5F2C9 /* AppStyledTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStyledTabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +134,7 @@
 				F670864629C9BC36003A57C7 /* Constants.swift */,
 				F69E0857299F873E006358E6 /* LaunchScreen.storyboard */,
 				F6E797A929DDAE5200B5F2C9 /* AppTypes.swift */,
+				F6E797AD29DED64000B5F2C9 /* AppErrors.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -135,6 +144,7 @@
 			children = (
 				F6510DA129D71251007F5493 /* UIBlockingProgressHUD.swift */,
 				F6E7979129DADCD000B5F2C9 /* UrlSession+Extension.swift */,
+				F6E797AF29E023B300B5F2C9 /* UIColor+Extension.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -199,6 +209,7 @@
 		F6E7978829DAD79000B5F2C9 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				F6E797B129E0263C00B5F2C9 /* Style */,
 				F6E797A229DD8DEA00B5F2C9 /* WebView */,
 				F6E7979D29DD7ACE00B5F2C9 /* TabBar */,
 				F6510D9929CE3184007F5493 /* SplashView */,
@@ -243,6 +254,15 @@
 				F6E797A329DD8E5100B5F2C9 /* WebViewControllerDelegate.swift */,
 			);
 			path = WebView;
+			sourceTree = "<group>";
+		};
+		F6E797B129E0263C00B5F2C9 /* Style */ = {
+			isa = PBXGroup;
+			children = (
+				F6E797B229E0265E00B5F2C9 /* AppStyledViewController.swift */,
+				F6E797B429E026A900B5F2C9 /* AppStyledTabBarController.swift */,
+			);
+			path = Style;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,6 +347,7 @@
 			files = (
 				F6510D9829CDB29D007F5493 /* OAuth2TokenStorage.swift in Sources */,
 				F69E0851299F873D006358E6 /* ImagesListViewController.swift in Sources */,
+				F6E797AE29DED64000B5F2C9 /* AppErrors.swift in Sources */,
 				F670864C29CB2B05003A57C7 /* WebViewController.swift in Sources */,
 				F69E0881299FC1E1006358E6 /* ImagesListCell.swift in Sources */,
 				F636B91E29B0B11800B7C61D /* ProfileViewController.swift in Sources */,
@@ -336,9 +357,11 @@
 				F6510D9429CDAB5D007F5493 /* OAuthTokenResponseBody.swift in Sources */,
 				F6E7979029DAD89600B5F2C9 /* ProfileResult.swift in Sources */,
 				F69E084D299F873D006358E6 /* AppDelegate.swift in Sources */,
+				F6E797B329E0265E00B5F2C9 /* AppStyledViewController.swift in Sources */,
 				F6E7978E29DAD87A00B5F2C9 /* Profile.swift in Sources */,
 				F6E7979429DAE95100B5F2C9 /* ProfileImageService.swift in Sources */,
 				F670864A29CB1B3B003A57C7 /* AuthViewController.swift in Sources */,
+				F6E797B529E026A900B5F2C9 /* AppStyledTabBarController.swift in Sources */,
 				F6E7979629DAEA4A00B5F2C9 /* UserResult.swift in Sources */,
 				F670864729C9BC36003A57C7 /* Constants.swift in Sources */,
 				F670862529B61252003A57C7 /* SingleImageViewController.swift in Sources */,
@@ -347,6 +370,7 @@
 				F6E797A129DD8C7D00B5F2C9 /* AuthViewControllerDelegate.swift in Sources */,
 				F6E7979F29DD7ADD00B5F2C9 /* TabBarController.swift in Sources */,
 				F6E7979229DADCD000B5F2C9 /* UrlSession+Extension.swift in Sources */,
+				F6E797B029E023B300B5F2C9 /* UIColor+Extension.swift in Sources */,
 				F6E797AA29DDAE5200B5F2C9 /* AppTypes.swift in Sources */,
 				F6E7978C29DAD80600B5F2C9 /* ProfileService.swift in Sources */,
 			);

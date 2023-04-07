@@ -7,7 +7,9 @@
 
 import UIKit
 
-final class AuthViewController: UIViewController {
+final class AuthViewController: AppStyledViewController {
+    weak var delegate: AuthViewControllerDelegate?
+    
     private lazy var logoImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -15,14 +17,6 @@ final class AuthViewController: UIViewController {
         return view
     }()
     
-    @objc private func didTapLoginButton() {
-        let vc = WebViewController()
-        vc.delegate = self
-        
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
-    }
-
     private lazy var loginButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -39,9 +33,12 @@ final class AuthViewController: UIViewController {
         )
         return button
     }()
-
-    weak var delegate: AuthViewControllerDelegate?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupView()
+    }
+
     private func setupView() {
         view.addSubview(logoImageView)
         view.addSubview(loginButton)
@@ -60,10 +57,13 @@ final class AuthViewController: UIViewController {
 
         NSLayoutConstraint.activate(constraints)
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupView()
+        
+    @objc private func didTapLoginButton() {
+        let vc = WebViewController()
+        vc.delegate = self
+        
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 }
 

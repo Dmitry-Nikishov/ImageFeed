@@ -8,17 +8,15 @@
 import UIKit
 import WebKit
 
-final class WebViewController: UIViewController {
-    @objc private func didTapBackButton() {
-        delegate?.webViewViewControllerDidCancel(self)
-    }
-
+final class WebViewController: AppStyledViewController {
+    weak var delegate: WebViewControllerDelegate?
+    
     private lazy var backButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
         button.setImage(UIImage(named: "nav_back_button"), for: .normal)
-
+        
         button.addTarget(
             self,
             action: #selector(didTapBackButton),
@@ -43,34 +41,6 @@ final class WebViewController: UIViewController {
     
     private var estimatedProgressObservation: NSKeyValueObservation?
     
-    weak var delegate: WebViewControllerDelegate?
-
-    private func setupViews() {
-        view.backgroundColor = .white
-
-        view.addSubview(backButton)
-        view.addSubview(webView)
-        view.addSubview(progressView)
-
-        let constraints = [
-            backButton.heightAnchor.constraint(equalToConstant: 24),
-            backButton.widthAnchor.constraint(equalToConstant: 24),
-            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
-
-            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor)
-        ]
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -94,7 +64,7 @@ final class WebViewController: UIViewController {
             URLQueryItem(name: "scope", value: AppConstants.UnsplashApi.accessScope)
         ]
         let url = urlComponents.url!
-
+        
         let request = URLRequest(url: url)
         webView.load(request)
     }
@@ -107,6 +77,36 @@ final class WebViewController: UIViewController {
                  guard let self = self else { return }
                  self.updateProgress()
              })
+    }
+    
+    private func setupViews() {
+        view.backgroundColor = .white
+        
+        view.addSubview(backButton)
+        view.addSubview(webView)
+        view.addSubview(progressView)
+        
+        let constraints = [
+            backButton.heightAnchor.constraint(equalToConstant: 24),
+            backButton.widthAnchor.constraint(equalToConstant: 24),
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
+            
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    @objc private func didTapBackButton() {
+        delegate?.webViewViewControllerDidCancel(self)
     }
 }
 

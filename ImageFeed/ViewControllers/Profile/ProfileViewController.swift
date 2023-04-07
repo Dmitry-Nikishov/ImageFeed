@@ -8,7 +8,7 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: AppStyledViewController {
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
 
@@ -56,7 +56,18 @@ final class ProfileViewController: UIViewController {
         return view
     }()
 
-    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setupViews()
+        setupHandlers()
+        
+        updateProfileDetails(with: profileService.profile)
+        
+        addObserverForProfileImageChange()
+        updateAvatar()
+    }
+
     private func setupViews() {
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
@@ -91,14 +102,7 @@ final class ProfileViewController: UIViewController {
         
         NSLayoutConstraint.activate(constraints)
     }
-    
-    @objc private func didTapLogoutButton() {
-    }
-    
-    private func setupHandlers() {
-        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-    }
-    
+
     private func updateProfileDetails(with profile: Profile?) {
         guard let profile = profile else { return }
         self.nameLabel.text = profile.name
@@ -116,7 +120,7 @@ final class ProfileViewController: UIViewController {
         
         avatarImageView.kf.setImage(with: url)
     }
-
+    
     private func addObserverForProfileImageChange() {
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -127,16 +131,11 @@ final class ProfileViewController: UIViewController {
                     self.updateAvatar()
                 }
     }
-        
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        setupViews()
-        setupHandlers()
-        
-        updateProfileDetails(with: profileService.profile)
-        
-        addObserverForProfileImageChange()
-        updateAvatar()
+
+    private func setupHandlers() {
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+    }
+
+    @objc private func didTapLogoutButton() {
     }
 }

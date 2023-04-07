@@ -36,9 +36,9 @@ final class OAuth2Service {
         return request
     }
         
-    private func createRequest(code: String) -> URLRequest {
+    private func createRequest(code: String) throws -> URLRequest {
         guard let url = buildUrl(for: code) else {
-            fatalError("URL creation failure")
+            throw AppErrors.urlCreationFailure
         }
         
         return createUrlRequest(for: url)
@@ -54,20 +54,26 @@ final class OAuth2Service {
         task?.cancel()
         lastCode = code
         
-        let request = createRequest(code: code)
-        
-        let session = URLSession.shared
-        let task = session.objectTask(for: request) { (result: OAuthTokenResponseResult) in
-            switch result {
-            case .success(let responseBody):
-                completion(.success(responseBody))
-                self.task = nil
-            case .failure(let error):
-                completion(.failure(error))
-                self.lastCode = nil
+        do {
+            let request = try createRequest(code: code)
+
+            let session = URLSession.shared
+            let task = session.objectTask(for: request) { [weak self] (result: OAuthTokenResponseResult) in
+                switch result {
+                case .success(let responseBody):
+                    completion(.success(responseBody))
+                    self?.task = nil
+                case .failure(let error):
+                    completion(.failure(error))
+                    self?.lastCode = nil
+                }
             }
+            self.task = task
+            task.resume()
+        } catch AppErrors.urlCreationFailure {
+            assertionFailure("URL creation failure")
+        } catch {
+            assertionFailure("Unexpected failure")
         }
-        self.task = task
-        task.resume()
     }
 }

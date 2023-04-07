@@ -7,13 +7,22 @@
 
 import UIKit
 
-final class TabBarController: UITabBarController {
+final class TabBarController: AppStyledTabBarController {
     private typealias ViewControllerWithIconName =
     (vc: UIViewController, iconName: String )
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupTabBarView()
+    }
+    
     private func createAppearance() -> UITabBarAppearance {
         let appearance = UITabBarAppearance()
-        appearance.backgroundColor = .black
+        appearance.backgroundColor = .appBackground
         return appearance
     }
 
@@ -46,12 +55,4 @@ final class TabBarController: UITabBarController {
             )
         }
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setupTabBarView()
-    }
-
-    
 }
