@@ -40,6 +40,8 @@ final class AuthViewController: AppStyledViewController {
     }
 
     private func setupView() {
+        view.backgroundColor = .appBackground
+        
         view.addSubview(logoImageView)
         view.addSubview(loginButton)
 

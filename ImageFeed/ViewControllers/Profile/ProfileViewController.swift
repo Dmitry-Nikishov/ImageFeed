@@ -69,6 +69,8 @@ final class ProfileViewController: AppStyledViewController {
     }
 
     private func setupViews() {
+        view.backgroundColor = .appBackground
+        
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(loginLabel)
