@@ -11,10 +11,6 @@ final class TabBarController: AppStyledTabBarController {
     private typealias ViewControllerWithIconName =
     (vc: UIViewController, iconName: String )
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBarView()
