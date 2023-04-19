@@ -35,7 +35,7 @@ final class ProfileImageServices {
         }
         
         var request = URLRequest(url: url)
-        guard let token = OAuth2TokenStorage().token else {
+        guard let token = OAuth2TokenStorage.shared.token else {
             throw AppErrors.tokenCreationFailure
         }
         

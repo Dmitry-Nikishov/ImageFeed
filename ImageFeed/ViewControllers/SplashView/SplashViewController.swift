@@ -9,7 +9,7 @@ import UIKit
 
 final class SplashViewController: AppStyledViewController {
     private let oauth2Service = OAuth2Service()
-    private let oauth2TokenStorage = OAuth2TokenStorage()
+    private let oauth2TokenStorage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageServices.shared
     
@@ -28,7 +28,7 @@ final class SplashViewController: AppStyledViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = OAuth2TokenStorage().token {
+        if let token = OAuth2TokenStorage.shared.token {
             fetchProfile(token)
         } else {
             showAuthViewController()

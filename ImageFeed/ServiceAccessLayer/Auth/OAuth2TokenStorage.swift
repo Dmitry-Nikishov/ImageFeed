@@ -9,8 +9,12 @@ import Foundation
 import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
+    static let shared = OAuth2TokenStorage()
+    
     private let storage = KeychainWrapper.standard
     private let bearerTokenStorage = "bearer"
+    
+    private init() {}
     
     var token: String? {
         get {
@@ -21,5 +25,9 @@ final class OAuth2TokenStorage {
             guard let data = newValue else { return }
             storage.set(data, forKey: bearerTokenStorage)
         }
+    }
+    
+    func deleteToken() {
+        storage.removeObject(forKey: bearerTokenStorage)
     }
 }
