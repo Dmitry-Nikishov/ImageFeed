@@ -9,8 +9,10 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: AppStyledViewController {
+    private var oauth2TokenStorage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    private var gradientViews = Set<UIView>()
 
     private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
@@ -60,12 +62,40 @@ final class ProfileViewController: AppStyledViewController {
         super.viewDidLoad()
         
         setupViews()
+        setupGradient()
         setupHandlers()
         
         updateProfileDetails(with: profileService.profile)
         
         addObserverForProfileImageChange()
         updateAvatar()
+    }
+        
+    private func setupGradientItem(gradientView: UIView, item: UIView) {
+        gradientView.createAnimatedGradient()
+        item.addSubview(gradientView)
+        gradientViews.insert(gradientView)
+    }
+    
+    private func setupGradient() {
+        setupGradientItem(
+            gradientView: GradientViewBuilder.create(for: .avatar),
+            item: avatarImageView
+        )
+
+        setupGradientItem(
+            gradientView: GradientViewBuilder.create(for: .login),
+            item: loginLabel
+        )
+
+        setupGradientItem(
+            gradientView: GradientViewBuilder.create(for: .name),
+            item: nameLabel
+        )
+    }
+    
+    private func deleteGradient() {
+        gradientViews.forEach { $0.deleteAnimatedGradient() }
     }
 
     private func setupViews() {
@@ -112,15 +142,36 @@ final class ProfileViewController: AppStyledViewController {
         self.descriptionLabel.text = profile.bio
     }
     
+    private func createPlaceholderImage() -> UIImage? {
+        let placeholderImageConfig = UIImage.SymbolConfiguration(pointSize: 70.0)
+        
+        let placeholderImage = UIImage(
+            systemName: "person.crop.circle.fill",
+            withConfiguration: placeholderImageConfig
+        )
+        placeholderImage?.withTintColor(
+            .gray,
+            renderingMode: .alwaysOriginal
+        )
+        
+        return placeholderImage
+    }
+    
     private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageServices.shared.avatarURL,
-            let url = URL(string: profileImageURL)
+            let url = URL(string: profileImageURL),
+            let placeholder = createPlaceholderImage()
         else {
             return
         }
         
-        avatarImageView.kf.setImage(with: url)
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: placeholder
+        ) { [weak self] _ in
+            self?.gradientViews.forEach { $0.deleteAnimatedGradient() }
+        }
     }
     
     private func addObserverForProfileImageChange() {
@@ -139,5 +190,29 @@ final class ProfileViewController: AppStyledViewController {
     }
 
     @objc private func didTapLogoutButton() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        alert.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        
+        let yesAction = UIAlertAction(title: "Да", style: .cancel) {
+            [weak self] _ in
+            guard let window = UIApplication.shared.windows.first else {
+                return assertionFailure("UIApplication.shared.windows.first is nil")
+            }
+
+            self?.oauth2TokenStorage.deleteToken()
+            BrowserCacheCleaner.clean()
+            window.rootViewController = SplashViewController()
+            window.makeKeyAndVisible()
+        }
+        alert.addAction(yesAction)
+        
+        let noAction = UIAlertAction(title: "Нет", style: .default)
+        alert.addAction(noAction)
+        
+        self.present(alert, animated: true)
     }
 }

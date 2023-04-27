@@ -44,13 +44,13 @@ final class SingleImageViewController: AppStyledViewController {
         return button
     }()
     
-    private let image: UIImage
+    private var fullImageUrl: String?
     
-    init(image: UIImage) {
-        self.image = image
+    init(fullImageUrl: String?) {
+        self.fullImageUrl = fullImageUrl
         super.init(nibName: nil, bundle: nil)
     }
-    
+        
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented for SingleImageViewController")
     }
@@ -58,14 +58,48 @@ final class SingleImageViewController: AppStyledViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setImage()
         setupViews()
-        rescaleAndCenterImageInScrollView(image: self.image)
+    }
+
+    private func setImage() {
+        UIBlockingProgressHUD.show()
+        guard let urlString = fullImageUrl else { return }
+        let url = URL(string: urlString)
+        DispatchQueue.main.async {
+            self.imageView.kf.setImage(with: url) { [weak self] result in
+                UIBlockingProgressHUD.dismiss()
+                guard let self = self else { return }
+                switch result {
+                case .success(let imageResult):
+                    self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                case .failure(let error):
+                    self.showError(with: error)
+                }
+            }
+        }
+    }
+
+    private func showError(with error: Error) {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так.",
+            message: "Ошибка - \(error). Попробовать еще раз?",
+            preferredStyle: .alert
+        )
+        let cancelAction = UIAlertAction(title: "Не надо", style: .cancel)
+        let repeatAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+            self?.setImage()
+        }
+        [cancelAction, repeatAction].forEach { item in
+            alert.addAction(item)
+        }
+        alert.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        self.present(alert, animated: true)
     }
 
     private func setupViews() {
         scrollView.delegate = self
         view.backgroundColor = .appBackground
-        imageView.image = image
         
         view.addSubview(scrollView)
         view.addSubview(backButton)
@@ -116,6 +150,10 @@ final class SingleImageViewController: AppStyledViewController {
     }
     
     @objc private func didTapShareButton() {
+        guard let image = imageView.image else {
+            return
+        }
+        
         let share = UIActivityViewController(
             activityItems: [image],
             applicationActivities: nil
