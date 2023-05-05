@@ -172,6 +172,7 @@ final class ProfileViewController:
             [weak self] _ in
             self?.presenter?.requestLogout()
         }
+        yesAction.accessibilityIdentifier = "Yes"
         alert.addAction(yesAction)
         
         let noAction = UIAlertAction(title: "Нет", style: .default)
