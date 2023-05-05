@@ -22,12 +22,34 @@ final class TabBarController: AppStyledTabBarController {
         return appearance
     }
 
+    private func createProfileViewController() -> ProfileViewController {
+        let presenter = ProfileViewPresenter(
+            uiWindowProvider: UIWindowProvider(),
+            rootVcSetter: RootViewControllerSetter(),
+            logoutCleaner: LogoutCleaner()
+        )
+        
+        let vc = ProfileViewController()
+        vc.presenter = presenter
+        presenter.view = vc
+        
+        return vc
+    }
+    
+    private func createImagesListViewController() -> ImagesListViewController {
+        let presenter = ImagesListViewPresenter()
+        let vc = ImagesListViewController()
+        vc.presenter = presenter
+        presenter.view = vc
+        return vc
+    }
+    
     private func createControllerContent() -> [ViewControllerWithIconName] {
         [
-            (vc: ImagesListViewController(),
+            (vc: createImagesListViewController(),
              iconName: "tab_editorial_active"),
             
-            (vc: ProfileViewController(),
+            (vc: createProfileViewController(),
              iconName: "tab_profile_active")
         ]
     }

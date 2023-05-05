@@ -8,10 +8,14 @@
 import UIKit
 import Kingfisher
 
+public protocol ImagesListViewControllerProtocol: AnyObject {
+    func updateAnimated(with newPhotos: [Photo])
+    func handleSuccessfullChangeLike(photos: [Photo], index: IndexPath)
+    func handleFailureChangeLike(failureReason: Error)
+}
+
 final class ImagesListViewController: AppStyledViewController {
     private var photos: [Photo] = []
-    private let imagesListService = ImagesListService.shared
-    private var imagesListServiceObserver: NSObjectProtocol?
     
     private lazy var tableView: UITableView = {
         let view = UITableView()
@@ -33,42 +37,25 @@ final class ImagesListViewController: AppStyledViewController {
         return view
     }()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .none
-        formatter.dateStyle = .long
-        return formatter
-    }()
-    
+    var presenter: ImagesListViewPresenterProtocol?
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        
         fetchPhotos()
-        registerNotificationObserver()
+        presenter?.registerNotificationObserver()
     }
 
     private func fetchPhotos() {
         UIBlockingProgressHUD.show()
-        imagesListService.fetchPhotosNextPage()
+        presenter?.fetchNextPagePhotos()
     }
-    
-    private func registerNotificationObserver() {
-        imagesListServiceObserver = NotificationCenter
-            .default
-            .addObserver(
-                forName: ImagesListService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                UIBlockingProgressHUD.dismiss()
-                self?.updateTableViewAnimated()
-            }
-    }
-    
-    private func updateTableViewAnimated() {
+        
+    private func updateTableViewAnimated(with newPhotos: [Photo]) {
         let oldCount = photos.count
-        let newCount = imagesListService.photos.count
-        photos = imagesListService.photos
+        let newCount = newPhotos.count
+        photos = newPhotos
         
         if oldCount != newCount {
             tableView.performBatchUpdates {
@@ -79,16 +66,7 @@ final class ImagesListViewController: AppStyledViewController {
             }
         }
     }
-    
-    private func getPhotoCreatedDate(for photo: Photo) -> String {
-        var formattedDate: String = ""
-        if let dateString = photo.createdAt {
-            formattedDate = dateFormatter.string(from: dateString)
-        }
         
-        return formattedDate
-    }
-    
     private func configCell(
         for cell: ImagesListCell,
         with indexPath: IndexPath
@@ -101,8 +79,6 @@ final class ImagesListViewController: AppStyledViewController {
         cell.backgroundColor = .black
         cell.selectionStyle = .none
         cell.cellState = .loading
-
-        let photoDate = getPhotoCreatedDate(for: photo)
                 
         KingfisherManager.shared.retrieveImage(with: imageURL) {
             [weak self] result in
@@ -112,7 +88,7 @@ final class ImagesListViewController: AppStyledViewController {
                 self?.tableView.reloadRows(at: [indexPath], with: .automatic)
                 cell.cellState = .finished(
                     imageResult.image,
-                    photoDate,
+                    PhotoHelpers.getCreatedDate(for: photo),
                     photo.isLiked
                 )
             case .failure(let error):
@@ -164,8 +140,7 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if (indexPath.row + 1) == photos.count {
-            UIBlockingProgressHUD.show()
-            imagesListService.fetchPhotosNextPage()
+            fetchPhotos()
         }
     }
 
@@ -198,21 +173,11 @@ extension ImagesListViewController: ImagesListCellDelegate {
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
         
-        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) {
-            [weak self] result in
-            guard let self = self else {
-                return
-            }
-            
-            UIBlockingProgressHUD.dismiss()
-            switch result {
-            case .success:
-                self.photos = self.imagesListService.photos
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            case .failure(let error):
-                self.showAlert(with: error)
-            }
-        }
+        presenter?.requestChangeLike(
+            photoId: photo.id,
+            isLike: !photo.isLiked,
+            index: indexPath
+        )
     }
     
     private func showAlert(with error: Error) {
@@ -226,5 +191,23 @@ extension ImagesListViewController: ImagesListCellDelegate {
         alert.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         alert.addAction(action)
         self.present(alert, animated: true)
+    }
+}
+
+extension ImagesListViewController: ImagesListViewControllerProtocol {
+    func updateAnimated(with newPhotos: [Photo]) {
+        UIBlockingProgressHUD.dismiss()
+        updateTableViewAnimated(with: newPhotos)
+    }
+    
+    func handleSuccessfullChangeLike(photos: [Photo], index: IndexPath) {
+        UIBlockingProgressHUD.dismiss()
+        self.photos = photos
+        tableView.reloadRows(at: [index], with: .automatic)
+    }
+    
+    func handleFailureChangeLike(failureReason: Error) {
+        UIBlockingProgressHUD.dismiss()
+        showAlert(with: failureReason)
     }
 }

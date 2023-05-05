@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Photo {
+public struct Photo {
     let id: String
     let size: CGSize
     let createdAt: Date?
@@ -24,6 +24,19 @@ struct Photo {
         self.thumbImageURL = result.urls.thumb
         self.largeImageURL = result.urls.full
         self.isLiked = result.likedByUser
+    }
+    
+    static func getDummy(with date: Date) -> Photo {
+        let photo = PhotoResult(
+            id: "",
+            createdAt: date,
+            width: 0,
+            height: 0,
+            description: "",
+            likedByUser: true,
+            urls: UrlsResult(full: "", thumb: "")
+        )
+        return Photo(from: photo)
     }
 }
 

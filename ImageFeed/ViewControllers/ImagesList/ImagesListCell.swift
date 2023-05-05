@@ -21,6 +21,7 @@ final class ImagesListCell: UITableViewCell {
 
     private lazy var likeButton: UIButton = {
         let button = UIButton()
+        button.accessibilityIdentifier = "likeButton"
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(likeButtonClicked), for: .touchUpInside)
         return button

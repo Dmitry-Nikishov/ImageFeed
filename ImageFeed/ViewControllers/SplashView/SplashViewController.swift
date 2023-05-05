@@ -27,7 +27,6 @@ final class SplashViewController: AppStyledViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         if let token = OAuth2TokenStorage.shared.token {
             fetchProfile(token)
         } else {

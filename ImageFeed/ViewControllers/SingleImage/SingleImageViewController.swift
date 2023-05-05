@@ -24,6 +24,7 @@ final class SingleImageViewController: AppStyledViewController {
     
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
+        button.accessibilityIdentifier = "navBackButton"
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(
             self,

@@ -8,10 +8,20 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: AppStyledViewController {
-    private var oauth2TokenStorage = OAuth2TokenStorage.shared
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    
+    func handleAvatarUpdate(
+        with url: Resource?,
+        placeholder: Placeholder?
+    )
+}
+
+final class ProfileViewController:
+    AppStyledViewController & ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol?
+    
     private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
     private var gradientViews = Set<UIView>()
 
     private lazy var avatarImageView: UIImageView = {
@@ -53,6 +63,7 @@ final class ProfileViewController: AppStyledViewController {
     
     private lazy var logoutButton: UIButton = {
         let view = UIButton()
+        view.accessibilityIdentifier = "logoutButton"
         view.translatesAutoresizingMaskIntoConstraints = false
         view.setBackgroundImage(UIImage(named: "logout_button"), for: .normal)
         return view
@@ -66,9 +77,8 @@ final class ProfileViewController: AppStyledViewController {
         setupHandlers()
         
         updateProfileDetails(with: profileService.profile)
-        
-        addObserverForProfileImageChange()
-        updateAvatar()
+    
+        presenter?.requestAvatarUpdate()
     }
         
     private func setupGradientItem(gradientView: UIView, item: UIView) {
@@ -141,54 +151,15 @@ final class ProfileViewController: AppStyledViewController {
         self.loginLabel.text = profile.loginName
         self.descriptionLabel.text = profile.bio
     }
-    
-    private func createPlaceholderImage() -> UIImage? {
-        let placeholderImageConfig = UIImage.SymbolConfiguration(pointSize: 70.0)
-        
-        let placeholderImage = UIImage(
-            systemName: "person.crop.circle.fill",
-            withConfiguration: placeholderImageConfig
-        )
-        placeholderImage?.withTintColor(
-            .gray,
-            renderingMode: .alwaysOriginal
-        )
-        
-        return placeholderImage
-    }
-    
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageServices.shared.avatarURL,
-            let url = URL(string: profileImageURL),
-            let placeholder = createPlaceholderImage()
-        else {
-            return
-        }
-        
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: placeholder
-        ) { [weak self] _ in
-            self?.gradientViews.forEach { $0.deleteAnimatedGradient() }
-        }
-    }
-    
-    private func addObserverForProfileImageChange() {
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageServices.didChangeNotification,
-                object: nil,
-                queue: .main) { [weak self] _ in
-                    guard let self = self else { return }
-                    self.updateAvatar()
-                }
-    }
-
+            
     private func setupHandlers() {
-        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        logoutButton.addTarget(
+            self,
+            action: #selector(didTapLogoutButton),
+            for: .touchUpInside
+        )
     }
-
+    
     @objc private func didTapLogoutButton() {
         let alert = UIAlertController(
             title: "Пока, пока!",
@@ -199,14 +170,7 @@ final class ProfileViewController: AppStyledViewController {
         
         let yesAction = UIAlertAction(title: "Да", style: .cancel) {
             [weak self] _ in
-            guard let window = UIApplication.shared.windows.first else {
-                return assertionFailure("UIApplication.shared.windows.first is nil")
-            }
-
-            self?.oauth2TokenStorage.deleteToken()
-            BrowserCacheCleaner.clean()
-            window.rootViewController = SplashViewController()
-            window.makeKeyAndVisible()
+            self?.presenter?.requestLogout()
         }
         alert.addAction(yesAction)
         
@@ -214,5 +178,19 @@ final class ProfileViewController: AppStyledViewController {
         alert.addAction(noAction)
         
         self.present(alert, animated: true)
+    }
+}
+
+extension ProfileViewController {
+    func handleAvatarUpdate(
+        with url: Resource?,
+        placeholder: Placeholder?
+    ) {
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: placeholder
+        ) { [weak self] _ in
+            self?.gradientViews.forEach { $0.deleteAnimatedGradient() }
+        }
     }
 }

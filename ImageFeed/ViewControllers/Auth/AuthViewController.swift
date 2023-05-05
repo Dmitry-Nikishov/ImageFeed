@@ -25,6 +25,7 @@ final class AuthViewController: AppStyledViewController {
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 16
         button.setTitle("Войти", for: .normal)
+        button.accessibilityIdentifier = "Authenticate"
         
         button.addTarget(
             self,
@@ -61,11 +62,16 @@ final class AuthViewController: AppStyledViewController {
     }
         
     @objc private func didTapLoginButton() {
-        let vc = WebViewController()
-        vc.delegate = self
+        let webViewController = WebViewController()
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
         
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
+        webViewController.presenter = webViewPresenter
+        webViewPresenter.view = webViewController
+        webViewController.delegate = self
+        
+        webViewController.modalPresentationStyle = .fullScreen
+        present(webViewController, animated: true)
     }
 }
 
